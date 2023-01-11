@@ -41,43 +41,62 @@ rutas.get('/usuarios/:id', function (req, res) {
 })
 
 rutas.post('/usuarios', function (req, res) {
-    let sql = "insert into usuarios set ?"
-    const fecha = new Date
-    console.log('Registro recibido: ', req.body);
+  let sql = "insert into usuarios set ?";
+  const fecha = new Date;
 
-    let poststr = {
-      documento: req.body.documento,
-      nombres: req.body.nombres,
-      apellidos: req.body.apellidos,
-      direccion: req.body.direccion,
-      telefono: req.body.telefono,
-      correo: req.body.correo,
-      modified: fecha
-    }
-    conexion.query(sql, poststr, function (error, results) {
-      if (error) {throw error
-      }else{
-        if (results.affectedRows) {
-          res.json({ status: 'Registro guardado' })
-        }
-        else
-          res.json({ status: 'No se pudo guardar' })
+  let poststr = {
+    documento: req.body.documento,
+    nombres: req.body.nombres,
+    apellidos: req.body.apellidos,
+    direccion: req.body.direccion,
+    telefono: req.body.telefono,
+    correo: req.body.correo,
+    modified: fecha
+  }
+  conexion.query(sql, poststr, function (error, results) {
+
+    try {
+      const valida = '' + results;
+
+      if (valida == 'undefined') {
+        res.json({ mensaje: 'No se pudo Registrar el usuario' })
+        console.log('No se pudo Registrar el usuario');
+      } else {
+        res.json({ mensaje: 'Registro exitoso del usuario' })
+        console.log('Registro recibido: ', req.body);
+        console.log(results)
       }
-    });
-  })
+
+    } catch {
+      res.json({ status: error })
+      console.log('No se pudo Registrar el usuario');
+    }
+
+  });
+})
 
 //--actualizar
 rutas.put('/usuarios', function (req, res) {
   const fecha = new Date
   let sql = "update usuarios set documento= ?,nombres= ?,apellidos = ?,direccion =?, telefono = ?,correo= ?, modified = ? where id = ?"
- 
+
   conexion.query(sql, [req.body.documento, req.body.nombres, req.body.apellidos, req.body.direccion, req.body.telefono, req.body.correo, fecha, req.body.id], function (error, results) {
-    if (error) throw error;
-    if (results.affectedRows) {
-      res.json({ status: 'Registro actualizado' })
+    try {
+      const valida = '' + results;
+
+      if (valida == 'undefined') {
+        res.json({ mensaje: 'No se pudo Actualizar el usuario' })
+        console.log('No se pudo Registrar el usuario');
+      } else {
+        res.json({ mensaje: 'Actualizacion exitosa del usuario' })
+        console.log('Registro recibido: ', req.body);
+        console.log(results)
+      }
+
+    } catch {
+      res.json({ status: error })
+      console.log('No se pudo Actualizar el usuario');
     }
-    else
-      res.json({ status: 'No se pudo actualizar' })
   });
 });
 
